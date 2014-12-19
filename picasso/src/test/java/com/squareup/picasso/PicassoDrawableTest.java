@@ -51,7 +51,7 @@ public class PicassoDrawableTest {
   }
 
   @Test public void createWithBitmapCacheHit() {
-    PicassoDrawable pd = new PicassoDrawable(context, BITMAP_1, placeholder, MEMORY, false, false);
+    PicassoDrawable pd = new PicassoDrawable(context, BITMAP_1, placeholder, MEMORY, true, false);
     assertThat(pd.getBitmap()).isSameAs(BITMAP_1);
     assertThat(pd.placeholder).isNull();
     assertThat(pd.animating).isFalse();

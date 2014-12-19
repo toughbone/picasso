@@ -83,8 +83,8 @@ final class PicassoDrawable extends BitmapDrawable {
 
     this.loadedFrom = loadedFrom;
 
-    boolean fade = loadedFrom != MEMORY && !noFade;
-    if (fade) {
+    // boolean fade = loadedFrom != MEMORY && !noFade;
+    if (!noFade) {
       this.placeholder = placeholder;
       animating = true;
       startTimeMillis = SystemClock.uptimeMillis();
