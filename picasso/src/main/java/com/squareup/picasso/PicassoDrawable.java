@@ -142,7 +142,11 @@ final class PicassoDrawable extends BitmapDrawable {
 	}
 	mHandleingBoundsChanged = true;
     if (placeholder != null) {
-      placeholder.setBounds(bounds);
+		Rect oldBounds = getBounds();
+		if (oldBounds == null || oldBounds.left != bounds.left || oldBounds.top != bounds.top ||
+					oldBounds.right != bounds.right || oldBounds.bottom != bounds.bottom) {
+			placeholder.setBounds(bounds);
+		}
     }
     super.onBoundsChange(bounds);
     mHandleingBoundsChanged = false;
