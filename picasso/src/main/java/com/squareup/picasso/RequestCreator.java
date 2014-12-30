@@ -606,6 +606,49 @@ public class RequestCreator {
     picasso.enqueueAndSubmit(action);
   }
 
+
+  /**
+   * Asynchronously fulfills the request into the specified {@link ImageView} and invokes the
+   * target {@link Callback} if it's not {@code null}.
+   * <p>
+   * <em>Note:</em> The {@link Callback} param is a strong reference and will prevent your
+   * {@link android.app.Activity} or {@link android.app.Fragment} from being garbage collected. If
+   * you use this method, it is <b>strongly</b> recommended you invoke an adjacent
+   * {@link Picasso#cancelRequest(android.widget.ImageView)} call to prevent temporary leaking.
+   */
+  public void into(ImageView target, Callback callback, boolean onlyCache) {
+	if (!onlyCache) {
+	  into(target, callback);
+      return;
+	}
+	
+    long started = System.nanoTime();
+    checkMain();
+
+    if (target == null) {
+      throw new IllegalArgumentException("Target must not be null.");
+    }
+
+    picasso.cancelRequest(target);
+    
+    if (!data.hasImage()) {
+      if (setPlaceholder) {
+        setPlaceholder(target, getPlaceholderDrawable());
+      }
+      return;
+    }
+
+    Bitmap bitmap = picasso.quickMemoryCacheCheck(createKey(createRequest(started)));
+    if (bitmap != null) {
+      setBitmap(target, picasso.context, bitmap, MEMORY, noFade, picasso.indicatorsEnabled);
+      if (callback != null) {
+        callback.onSuccess();
+      }
+    } else if (setPlaceholder) {
+      setPlaceholder(target, getPlaceholderDrawable());
+    }
+  }
+  
   private Drawable getPlaceholderDrawable() {
     if (placeholderResId != 0) {
       return picasso.context.getResources().getDrawable(placeholderResId);
